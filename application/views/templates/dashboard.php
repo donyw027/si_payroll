@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title><?= $title; ?> | Reminder PKWT AKT ID</title>
+    <title><?= $title; ?> | SENDER SLIP EMAIL</title>
     <link rel="icon" href="<?= base_url('assets/img/xto.ico'); ?>">
 
     <!-- Custom fonts for this template-->
@@ -25,14 +25,14 @@
     <link href="<?= base_url(); ?>assets/vendor/datatables/buttons/css/buttons.bootstrap4.min.css" rel="stylesheet">
     <link href="<?= base_url(); ?>assets/vendor/datatables/responsive/css/responsive.bootstrap4.min.css" rel="stylesheet">
     <link href="<?= base_url(); ?>assets/vendor/gijgo/css/gijgo.min.css" rel="stylesheet">
-  <!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script> -->
-  <!-- <script src="//cdn.ckeditor.com/4.22.1/basic/ckeditor.js"></script> -->
-  <!-- <script src="//cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script> -->
-  <script src="//cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
+    <!-- <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script> -->
+    <!-- <script src="//cdn.ckeditor.com/4.22.1/basic/ckeditor.js"></script> -->
+    <!-- <script src="//cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script> -->
+    <script src="//cdn.ckeditor.com/4.22.1/full/ckeditor.js"></script>
 
 
     <!-- sumer note -->
-    
+
     <!-- <script src="https://cdn.ckeditor.com/4.24.0-lts/standard/ckeditor.js"></script> -->
 
     <style>
@@ -62,7 +62,7 @@
                     <img src="<?= base_url('assets/img/xto.png'); ?>" width="50px" height="50px" alt="">
                 </div>
                 <div class="sidebar-brand-text mx-1">
-                    <font color=black>Reminder PKWT</font>
+                    <font color=white>Sender Slip</font>
                 </div>
             </b>
 
@@ -147,17 +147,17 @@
                     <span>Friday List</span>
                 </a>
             </li> -->
-            
 
-            
-<hr class="sidebar-divider">
+
+
+            <hr class="sidebar-divider">
 
             <div class="sidebar-heading">
                 Slip
             </div>
 
             <!-- Nav Item - Dashboard -->
-            
+
 
             <li class="nav-item">
                 <a class="nav-link pb-0" href="<?= base_url('payroll'); ?>">
@@ -190,31 +190,31 @@
 
 
 
-                <hr class="sidebar-divider">
+            <hr class="sidebar-divider">
 
 
-                <?php if ($this->session->userdata('login_session')['nama'] == 'doni' || $this->session->userdata('login_session')['nama'] == 'Faiz') : ?>
+            <?php if ($this->session->userdata('login_session')['nama'] == 'doni' || $this->session->userdata('login_session')['nama'] == 'Faiz') : ?>
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
                     Settings
                 </div>
-                    
-                <li class="nav-item">
-                <a class="nav-link pb-0" href="<?= base_url('user/log'); ?>">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>Log Sistem</span>
-                </a>
-            </li>
-            <?php if ($this->session->userdata('login_session')['nama'] == 'doni') : ?>
 
-            <li class="nav-item">
-                <a class="nav-link pb-0" href="<?= base_url('user'); ?>">
-                    <i class="fas fa-fw fa-folder"></i>
-                    <span>User Management</span>
-                </a>
-            </li>
-            <?php endif; ?>
+                <li class="nav-item">
+                    <a class="nav-link pb-0" href="<?= base_url('user/log'); ?>">
+                        <i class="fas fa-fw fa-folder"></i>
+                        <span>Log Sistem</span>
+                    </a>
+                </li>
+                <?php if ($this->session->userdata('login_session')['nama'] == 'doni') : ?>
+
+                    <li class="nav-item">
+                        <a class="nav-link pb-0" href="<?= base_url('user'); ?>">
+                            <i class="fas fa-fw fa-folder"></i>
+                            <span>User Management</span>
+                        </a>
+                    </li>
+                <?php endif; ?>
 
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('log'); ?>">
@@ -229,7 +229,7 @@
                     </a>
                 </li> -->
                 <br>
-            <hr class="sidebar-divider d-none d-md-block">
+                <hr class="sidebar-divider d-none d-md-block">
 
             <?php endif; ?>
 
@@ -237,7 +237,7 @@
 
 
             <!-- Divider -->
-             <br>
+            <br>
 
             <!-- Sidebar Toggler (Sidebar) -->
             <div class="text-center d-none d-md-inline">
@@ -323,7 +323,7 @@
             <footer class="sticky-footer bg-light">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
-                        <span>Copyright &copy; Reminder PKWT AKT Indonesia | Doni AKTID 2024</span>
+                        <span>Copyright &copy; Sender Slip Email | Doni AKTID 2024</span>
                     </div>
                 </div>
             </footer>
@@ -512,16 +512,16 @@
             });
     </script>
     <script>
-                // Replace the <textarea id="editor1"> with a CKEditor 4
-                // instance, using default configuration.
-                CKEDITOR.replace( 'editor' );
-            </script>
+        // Replace the <textarea id="editor1"> with a CKEditor 4
+        // instance, using default configuration.
+        CKEDITOR.replace('editor');
+    </script>
 
     <!-- <script>
                         CKEDITOR.replace( 'editor1' );
                 </script> -->
 
-  
+
 
 
 

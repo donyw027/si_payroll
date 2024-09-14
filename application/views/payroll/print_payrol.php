@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            font-size: 7.5pt;
+            font-size: 8.5pt;
         }
 
         table {
@@ -34,6 +34,13 @@
     ?>
 
     <?php
+    $path1 = FCPATH . 'assets/img/ttd.png';
+    $type1 = pathinfo($path1, PATHINFO_EXTENSION);
+    $data1 = file_get_contents($path1);
+    $base641 = 'data:image/' . $type1 . ';base64,' . base64_encode($data1);
+    ?>
+
+    <?php
     $bulann =  date('Y-m-d');
     $date1 = new DateTime($bulann);
     $date1->modify("-1 month");
@@ -42,18 +49,20 @@
 
     <table>
         <tr>
-            <td style="width: 30%; font-size: 6;">PT AKT Indonesia <br>Rembang Industri Raya no 45 <br>Tlp./Fax 0343-4505082 <br>Pasuruan Jawa Timur</td>
+            <!-- <td style="width: 10%; font-size: 6;">
+                PT AKT Indonesia <br>Rembang Industri Raya no 45 <br>Tlp./Fax 0343-4505082 <br>Pasuruan Jawa Timur
+            </td> -->
 
-            <td style="width: 40%;">
-                <center> <img src="<?= $base64; ?>" width="180px" alt=""></center>
+            <td style="width: 50%;">
+                <center> <img src="<?= $base64; ?>" width="200px" alt=""></center>
             </td>
 
 
-            <th style="width: 30%;">
-                <table border="1px solid black">
+            <th style="width: 50%;">
+                <table>
                     <tr>
-                        <th>
-                            Slip Gaji <br> <?= $bulan_sebelum; ?>
+                        <th style="font-size: 10pt;border: 1px solid Black;">
+                            Slip Gaji <?= $bulan_sebelum; ?>
                         </th>
                     </tr>
                 </table>
@@ -166,8 +175,8 @@
         </tr>
 
         <tr>
-            <td style="border: border: 1px solid black;;"><b>Jumlah Potongan</b></td>
-            <td style="border: border: 1px solid black;;"><b>Rp. <?= number_format($payroll->jumlah_potongan, 0, ',', '.'); ?></b></td>
+            <td style="border: 1px solid black;font-weight: bold;"><b>Jumlah Potongan</b></td>
+            <td style="border: 1px solid black;width: 50%;"><b>Rp. <?= number_format($payroll->jumlah_potongan, 0, ',', '.'); ?></b></td>
         </tr>
 
 
@@ -197,7 +206,8 @@
                 Pasuruan Jawa Timur 67152
             </td>
             <td style="width: 30%;text-align: center;">
-                HRD <br><br><br><br><br>
+                HRD <br>
+                <center> <img src="<?= $base641; ?>" width="80px" alt=""></center>
                 <B>M. RIZA FAHMI</B>
             </td>
         </tr>

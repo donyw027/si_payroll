@@ -37,49 +37,91 @@ class Workingdays extends CI_Controller
     }
 
 
-    public function send_workingdays_by1($getId) {
+    public function send_workingdays_by1($getId)
+    {
         $id = encode_php_tags($getId);
 
         $workingdays = $this->admin->get_workingdays_by_id($id);
         // var_dump($workingdayss->email); die();
 
-        
 
-            $this->send_workingdays_email_by1($workingdays);
-            $yang_login = $this->session->userdata('login_session')['nama'];
-            $tgl = date('d M Y | H:i');
-            $data_log = [
-                'tanggal'       => $tgl,
-                'aksi'       => 'Pengiriman Slip Working Days ke '.$workingdays->nama .', NIK : '.$workingdays->nik,
-                'aktor'       => $yang_login
-            ];
-            $this->admin->insert('log_s', $data_log);
+
+        $this->send_workingdays_email_by1($workingdays);
+        $yang_login = $this->session->userdata('login_session')['nama'];
+        $tgl = date('d M Y | H:i');
+        $data_log = [
+            'tanggal'       => $tgl,
+            'aksi'       => 'Pengiriman Slip Working Days ke ' . $workingdays->nama . ', NIK : ' . $workingdays->nik,
+            'aktor'       => $yang_login
+        ];
+        $this->admin->insert('log_s', $data_log);
 
         set_pesan('Email Berhasil Terkirim');
-                redirect('workingdays');
+        redirect('workingdays');
     }
 
-    private function send_workingdays_email_by1($workingdays) {
+    //     private function send_workingdays_email_by1($workingdays) {
+    //         // var_dump($workingdays); die();
+    //         $bulann =  date('Y-m-d');
+    // $date1 = new DateTime($bulann);
+    // $date1->modify("-1 month");
+    // $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
+
+    //         $this->email->from('aktindonesia@akt-id.com', 'PT. AKT Indonesia');
+    //         $this->email->to($workingdays->email);
+    //         $this->email->subject('Slip WD ' . $bulan_sebelum);
+
+    //         $message = $this->load->view('workingdays/print_workingdays', ['workingdays' => $workingdays], TRUE);
+    //         $this->email->message($message);
+
+    //         if (!$this->email->send()) {
+    //             log_message('error', 'Failed to send workingdays email to: ' . $workingdays->email);
+    //         }
+    //     }
+
+    private function send_workingdays_email_by1($workingdays)
+    {
         // var_dump($workingdays); die();
         $bulann =  date('Y-m-d');
-$date1 = new DateTime($bulann);
-$date1->modify("-1 month");
-$bulan_sebelum = format_bulan($date1->format('Y-m-d'));
+        $date1 = new DateTime($bulann);
+        $date1->modify("-1 month");
+        $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
 
+        // Load HTML view
+        $html = $this->load->view('workingdays/print_workingdays', ['workingdays' => $workingdays], TRUE);
+
+        // Load Dompdf
+        $this->load->library('pdf');
+        $this->pdf->loadHtml($html);
+        $this->pdf->setPaper('A5', 'portrait');
+        $this->pdf->render();
+
+        // Simpan output PDF ke file di server sementara
+        $output = $this->pdf->output();
+        $file_path = FCPATH . 'uploads/Slip_WorkingDays_' . $workingdays->nik . '_' . $bulan_sebelum . '.pdf';
+        file_put_contents($file_path, $output);
+
+        // Setup email
         $this->email->from('aktindonesia@akt-id.com', 'PT. AKT Indonesia');
         $this->email->to($workingdays->email);
-        $this->email->subject('Slip WD ' . $bulan_sebelum);
+        $this->email->subject('Slip Working Days ' . $bulan_sebelum);
+        $this->email->message('Berikut Merupakan Lampiran Working Days Karyawan Bulan ' . $bulan_sebelum . '.');
 
-        $message = $this->load->view('workingdays/print_workingdays', ['workingdays' => $workingdays], TRUE);
-        $this->email->message($message);
+        // Lampirkan PDF
+        $this->email->attach($file_path);
 
+        // Kirim email
         if (!$this->email->send()) {
             log_message('error', 'Failed to send workingdays email to: ' . $workingdays->email);
+        } else {
+            // // Hapus file PDF setelah email terkirim
+            // unlink($file_path);
         }
     }
-    
 
-    public function send_workingdays() {
+
+    public function send_workingdays()
+    {
 
         $workingdayss = $this->admin->get_all_workingdays();
 
@@ -88,25 +130,26 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
         }
         $this->email->clear(TRUE);
         $yang_login = $this->session->userdata('login_session')['nama'];
-            $tgl = date('d M Y | H:i');
-            $data_log = [
-                'tanggal'       => $tgl,
-                'aksi'       => 'Pengiriman Semua Slip Working Days ke email karyawan',
-                'aktor'       => $yang_login
-            ];
-            $this->admin->insert('log_s', $data_log);
+        $tgl = date('d M Y | H:i');
+        $data_log = [
+            'tanggal'       => $tgl,
+            'aksi'       => 'Pengiriman Semua Slip Working Days ke email karyawan',
+            'aktor'       => $yang_login
+        ];
+        $this->admin->insert('log_s', $data_log);
 
         set_pesan('Email Berhasil Terkirim');
-                redirect('workingdays');
+        redirect('workingdays');
     }
 
-   
 
-    private function send_workingdays_email($workingdays) {
+
+    private function send_workingdays_email($workingdays)
+    {
         $bulann =  date('Y-m-d');
-$date1 = new DateTime($bulann);
-$date1->modify("-1 month");
-$bulan_sebelum = format_bulan($date1->format('Y-m-d'));
+        $date1 = new DateTime($bulann);
+        $date1->modify("-1 month");
+        $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
 
         $this->email->from('aktindonesia@akt-id.com', 'PT. AKT Indonesia');
         $this->email->to($workingdays->email);
@@ -120,17 +163,18 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
         }
     }
 
-    public function upload_excel() {
+    public function upload_excel()
+    {
 
         $this->load->library('session');
-            $this->load->helper(array('form', 'url'));
+        $this->load->helper(array('form', 'url'));
         // Konfigurasi upload
         $config['upload_path'] = './uploads/';
         $config['allowed_types'] = 'xls|xlsx';
         $config['max_size'] = 10000;
-    
+
         $this->upload->initialize($config);
-    
+
         if (!$this->upload->do_upload('excel_file')) {
             echo "Path: " . realpath('./uploads/') . "<br>";
             echo "File exists: " . file_exists(realpath('./uploads/')) . "<br>";
@@ -140,15 +184,15 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
         } else {
             $fileData = $this->upload->data();
             $filePath = './uploads/' . $fileData['file_name'];
-    
+
             // Load PHPExcel library
             require_once(APPPATH . 'third_party/PHPExcel/Classes/PHPExcel.php');
             require_once(APPPATH . 'third_party/PHPExcel/Classes/PHPExcel/IOFactory.php');
-    
+
             $objPHPExcel = PHPExcel_IOFactory::load($filePath);
-    
+
             $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
-    
+
             $data = [];
             foreach ($sheetData as $row) {
                 $data[] = [
@@ -169,11 +213,11 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
                     'harilibur8' => $row['O'],
                     'total_overtime' => $row['P'],
                     'email' => $row['Q']
-                    
+
                 ];
             }
             // var_dump($data);die();
-    
+
             // Menggunakan insert_batch untuk memasukkan data ke dalam database
             $yang_login = $this->session->userdata('login_session')['nama'];
             $tgl = date('d M Y | H:i');
@@ -184,7 +228,7 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
             ];
             $this->admin->insert('log_s', $data_log);
             $this->db->insert_batch('workingdays', $data);
-    
+
             $this->session->set_flashdata('message', 'File berhasil diupload dan data dimasukkan ke database');
             redirect('workingdays/');
         }
@@ -194,13 +238,13 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
     {
         // Execute truncate query
         $yang_login = $this->session->userdata('login_session')['nama'];
-            $tgl = date('d M Y | H:i');
-            $data_log = [
-                'tanggal'       => $tgl,
-                'aksi'       => 'Menghapus semua data Working Days',
-                'aktor'       => $yang_login
-            ];
-            $this->admin->insert('log_s', $data_log);
+        $tgl = date('d M Y | H:i');
+        $data_log = [
+            'tanggal'       => $tgl,
+            'aksi'       => 'Menghapus semua data Working Days',
+            'aktor'       => $yang_login
+        ];
+        $this->admin->insert('log_s', $data_log);
         $this->db->truncate('workingdays');
 
         // Set flashdata for success message

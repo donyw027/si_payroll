@@ -106,8 +106,8 @@ class Payroll extends CI_Controller
         if (!$this->email->send()) {
             log_message('error', 'Failed to send payroll email to: ' . $payroll->email);
         } else {
-            // Hapus file PDF setelah email terkirim
-            unlink($file_path);
+            // // Hapus file PDF setelah email terkirim
+            // unlink($file_path);
         }
     }
 
