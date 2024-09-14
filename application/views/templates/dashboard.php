@@ -77,12 +77,12 @@
 
 
             <!-- Divider -->
-            <hr class="sidebar-divider">
+            <!-- <hr class="sidebar-divider"> -->
 
             <!-- Heading -->
-            <div class="sidebar-heading">
+            <!-- <div class="sidebar-heading">
                 Data Master
-            </div>
+            </div> -->
 
 
             <!-- Nav Item - Pages Collapse Menu -->
@@ -103,35 +103,33 @@
                 </div>
             </li> -->
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link pb-0" href="<?= base_url('pkwt'); ?>">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Master PKWT & HRD</span>
                 </a>
-            </li>
+            </li> -->
 
 
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link pb-0" href="<?= base_url('karyawan'); ?>">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Master Karyawan</span>
                 </a>
-            </li>
+            </li> -->
 
-            <br>
-            <?php  ?>
 
             <!-- Divider -->
-            <hr class="sidebar-divider">
+            <!-- <hr class="sidebar-divider"> -->
 
             <!-- Heading -->
-            <div class="sidebar-heading">
+            <!-- <div class="sidebar-heading">
                 Transaksi
-            </div>
+            </div> -->
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link pb-0" href="<?= base_url('karyawan/data_pkwt'); ?>">
                     <i class="fas fa-fw fa-folder"></i>
                     <span>All Data PKWT</span>
@@ -148,11 +146,10 @@
                     <i class="fas fa-fw fa-folder"></i>
                     <span>Friday List</span>
                 </a>
-            </li>
+            </li> -->
             
 
             
-<br>
 <hr class="sidebar-divider">
 
             <div class="sidebar-heading">
@@ -196,7 +193,7 @@
                 <hr class="sidebar-divider">
 
 
-                <?php if ($this->session->userdata('login_session')['nama'] == 'Doni' || $this->session->userdata('login_session')['nama'] == 'Faiz') : ?>
+                <?php if ($this->session->userdata('login_session')['nama'] == 'doni' || $this->session->userdata('login_session')['nama'] == 'Faiz') : ?>
 
                 <!-- Heading -->
                 <div class="sidebar-heading">
@@ -209,7 +206,7 @@
                     <span>Log Sistem</span>
                 </a>
             </li>
-            <?php if ($this->session->userdata('login_session')['nama'] == 'Doni') : ?>
+            <?php if ($this->session->userdata('login_session')['nama'] == 'doni') : ?>
 
             <li class="nav-item">
                 <a class="nav-link pb-0" href="<?= base_url('user'); ?>">

@@ -30,48 +30,90 @@ class Payroll extends CI_Controller
     }
 
 
-    public function send_payrolls_by1($getId) {
+    public function send_payrolls_by1($getId)
+    {
         $id = encode_php_tags($getId);
 
         $payroll = $this->admin->get_payroll_by_id($id);
         // var_dump($payroll->nama); die();
-        
 
-            $this->send_payroll_email_by1($payroll);
-            $yang_login = $this->session->userdata('login_session')['nama'];
-            $tgl = date('d M Y | H:i');
-            $data_log = [
-                'tanggal'       => $tgl,
-                'aksi'       => 'Pengiriman Slip Gaji ke '.$payroll->nama .', NIK : '.$payroll->nik,
-                'aktor'       => $yang_login
-            ];
-            $this->admin->insert('log_s', $data_log);
+
+        $this->send_payroll_email_by1($payroll);
+        $yang_login = $this->session->userdata('login_session')['nama'];
+        $tgl = date('d M Y | H:i');
+        $data_log = [
+            'tanggal'       => $tgl,
+            'aksi'       => 'Pengiriman Slip Gaji ke ' . $payroll->nama . ', NIK : ' . $payroll->nik,
+            'aktor'       => $yang_login
+        ];
+        $this->admin->insert('log_s', $data_log);
 
         set_pesan('Email Berhasil Terkirim');
-                redirect('payroll');
+        redirect('payroll');
     }
 
-    private function send_payroll_email_by1($payroll) {
+    //good     private function send_payroll_email_by1($payroll) {
+    //         // var_dump($payroll); die();
+    //         $bulann =  date('Y-m-d');
+    // $date1 = new DateTime($bulann);
+    // $date1->modify("-1 month");
+    // $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
+
+    //         $this->email->from('aktindonesia@akt-id.com', 'PT. AKT Indonesia');
+    //         $this->email->to($payroll->email);
+    //         $this->email->subject('Slip Gaji ' . $bulan_sebelum);
+
+    //         $message = $this->load->view('payroll/print_payrol', ['payroll' => $payroll], TRUE);
+    //         $this->email->message($message);
+
+    //         if (!$this->email->send()) {
+    //             log_message('error', 'Failed to send payroll email to: ' . $payroll->email);
+    //         }
+    //     }
+
+    private function send_payroll_email_by1($payroll)
+    {
         // var_dump($payroll); die();
         $bulann =  date('Y-m-d');
-$date1 = new DateTime($bulann);
-$date1->modify("-1 month");
-$bulan_sebelum = format_bulan($date1->format('Y-m-d'));
+        $date1 = new DateTime($bulann);
+        $date1->modify("-1 month");
+        $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
 
+        // Load HTML view
+        $html = $this->load->view('payroll/print_payrol', ['payroll' => $payroll], TRUE);
+
+        // Load Dompdf
+        $this->load->library('pdf');
+        $this->pdf->loadHtml($html);
+        $this->pdf->setPaper('A5', 'portrait');
+        $this->pdf->render();
+
+        // Simpan output PDF ke file di server sementara
+        $output = $this->pdf->output();
+        $file_path = FCPATH . 'uploads/Slip_Gaji_' . $payroll->nik . '_' . $bulan_sebelum . '.pdf';
+        file_put_contents($file_path, $output);
+
+        // Setup email
         $this->email->from('aktindonesia@akt-id.com', 'PT. AKT Indonesia');
         $this->email->to($payroll->email);
         $this->email->subject('Slip Gaji ' . $bulan_sebelum);
+        $this->email->message('Berikut Merupakan Lampiran Slip Gaji Karyawan Bulan ' . $bulan_sebelum . '.');
 
-        $message = $this->load->view('payroll/print_payrol', ['payroll' => $payroll], TRUE);
-        $this->email->message($message);
+        // Lampirkan PDF
+        $this->email->attach($file_path);
 
+        // Kirim email
         if (!$this->email->send()) {
             log_message('error', 'Failed to send payroll email to: ' . $payroll->email);
+        } else {
+            // Hapus file PDF setelah email terkirim
+            unlink($file_path);
         }
     }
-    
 
-    public function send_payrolls() {
+
+    public function send_payrolls()
+    {
 
         $payrolls = $this->admin->get_all_payrolls();
 
@@ -80,26 +122,27 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
         }
         $this->email->clear(TRUE);
         $yang_login = $this->session->userdata('login_session')['nama'];
-            $tgl = date('d M Y | H:i');
-            $data_log = [
-                'tanggal'       => $tgl,
-                'aksi'       => 'Mengirim Semua Slip Gaji ke email karyawan',
-                'aktor'       => $yang_login
-            ];
-            $this->admin->insert('log_s', $data_log);
+        $tgl = date('d M Y | H:i');
+        $data_log = [
+            'tanggal'       => $tgl,
+            'aksi'       => 'Mengirim Semua Slip Gaji ke email karyawan',
+            'aktor'       => $yang_login
+        ];
+        $this->admin->insert('log_s', $data_log);
 
 
         set_pesan('Email Berhasil Terkirim');
-                redirect('payroll');
+        redirect('payroll');
     }
 
-   
 
-    private function send_payroll_email($payroll) {
+
+    private function send_payroll_email($payroll)
+    {
         $bulann =  date('Y-m-d');
-$date1 = new DateTime($bulann);
-$date1->modify("-1 month");
-$bulan_sebelum = format_bulan($date1->format('Y-m-d'));
+        $date1 = new DateTime($bulann);
+        $date1->modify("-1 month");
+        $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
 
         $this->email->from('aktindonesia@akt-id.com', 'PT. AKT Indonesia');
         $this->email->to($payroll->email);
@@ -114,66 +157,67 @@ $bulan_sebelum = format_bulan($date1->format('Y-m-d'));
     }
 
 
-public function upload_excel() {
+    public function upload_excel()
+    {
 
-    $this->load->library('session');
+        $this->load->library('session');
         $this->load->helper(array('form', 'url'));
-    // Konfigurasi upload
-    $config['upload_path'] = './uploads/';
-    $config['allowed_types'] = 'xls|xlsx';
-    $config['max_size'] = 10000;
+        // Konfigurasi upload
+        $config['upload_path'] = './uploads/';
+        $config['allowed_types'] = 'xls|xlsx';
+        $config['max_size'] = 10000;
 
-    $this->upload->initialize($config);
+        $this->upload->initialize($config);
 
-    if (!$this->upload->do_upload('excel_file')) {
-        echo "Path: " . realpath('./uploads/') . "<br>";
-        echo "File exists: " . file_exists(realpath('./uploads/')) . "<br>";
-        echo "Is writable: " . is_writable(realpath('./uploads/')) . "<br>";
-        $this->session->set_flashdata('message', $this->upload->display_errors());
-        redirect('payroll');
-    } else {
-        $fileData = $this->upload->data();
-        $filePath = './uploads/' . $fileData['file_name'];
+        if (!$this->upload->do_upload('excel_file')) {
+            echo "Path: " . realpath('./uploads/') . "<br>";
+            echo "File exists: " . file_exists(realpath('./uploads/')) . "<br>";
+            echo "Is writable: " . is_writable(realpath('./uploads/')) . "<br>";
+            $this->session->set_flashdata('message', $this->upload->display_errors());
+            redirect('payroll');
+        } else {
+            $fileData = $this->upload->data();
+            $filePath = './uploads/' . $fileData['file_name'];
 
-        // Load PHPExcel library
-        require_once(APPPATH . 'third_party/PHPExcel/Classes/PHPExcel.php');
-        require_once(APPPATH . 'third_party/PHPExcel/Classes/PHPExcel/IOFactory.php');
+            // Load PHPExcel library
+            require_once(APPPATH . 'third_party/PHPExcel/Classes/PHPExcel.php');
+            require_once(APPPATH . 'third_party/PHPExcel/Classes/PHPExcel/IOFactory.php');
 
-        $objPHPExcel = PHPExcel_IOFactory::load($filePath);
+            $objPHPExcel = PHPExcel_IOFactory::load($filePath);
 
-        $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
+            $sheetData = $objPHPExcel->getActiveSheet()->toArray(null, true, true, true);
 
-        $data = [];
-        foreach ($sheetData as $row) {
-            $data[] = [
-                'id' => $row['A'],
-                'nama' => $row['B'],
-                'nik' => $row['C'],
-                'dept' => $row['D'],
-                'status' => $row['E'],
-                'gaji_pokok' => $row['F'],
-                'gaji_tidak_full' => $row['G'],
-                'uang_phl' => $row['H'],
-                'tunjangan' => $row['I'],
-                'sisa_cuti' => $row['J'],
-                'lembur' => $row['K'],
-                'koreksi_positif' => $row['L'],
-                'jumlah_pendapatan' => $row['M'],
-                'bpjs_tk' => $row['N'],
-                'bpjs_kes' => $row['O'],
-                'pph21' => $row['P'],
-                'absensi' => $row['Q'],
-                'koreksi_negatif' => $row['R'],
-                'jumlah_potongan' => $row['S'],
-                'take_home_pay' => $row['T'],
-                'email' => $row['U'],
-                'total_hari_kerja' => $row['V']
-            ];
-        }
-        // var_dump($data);die();
+            $data = [];
+            foreach ($sheetData as $row) {
+                $data[] = [
+                    'id' => $row['A'],
+                    'nama' => $row['B'],
+                    'nik' => $row['C'],
+                    'dept' => $row['D'],
+                    'status' => $row['E'],
+                    'gaji_pokok' => $row['F'],
+                    'gaji_tidak_full' => $row['G'],
+                    'uang_phl' => $row['H'],
+                    'tunjangan' => $row['I'],
+                    'sisa_cuti' => $row['J'],
+                    'lembur' => $row['K'],
+                    'koreksi_positif' => $row['L'],
+                    'jumlah_pendapatan' => $row['M'],
+                    'bpjs_tk' => $row['N'],
+                    'bpjs_kes' => $row['O'],
+                    'pph21' => $row['P'],
+                    'absensi' => $row['Q'],
+                    'koreksi_negatif' => $row['R'],
+                    'jumlah_potongan' => $row['S'],
+                    'take_home_pay' => $row['T'],
+                    'email' => $row['U'],
+                    'total_hari_kerja' => $row['V']
+                ];
+            }
+            // var_dump($data);die();
 
-        // Menggunakan insert_batch untuk memasukkan data ke dalam database
-        $yang_login = $this->session->userdata('login_session')['nama'];
+            // Menggunakan insert_batch untuk memasukkan data ke dalam database
+            $yang_login = $this->session->userdata('login_session')['nama'];
             $tgl = date('d M Y | H:i');
             $data_log = [
                 'tanggal'       => $tgl,
@@ -181,12 +225,12 @@ public function upload_excel() {
                 'aktor'       => $yang_login
             ];
             $this->admin->insert('log_s', $data_log);
-        $this->db->insert_batch('payroll', $data);
+            $this->db->insert_batch('payroll', $data);
 
-        $this->session->set_flashdata('message', 'File berhasil diupload dan data dimasukkan ke database');
-        redirect('payroll/');
+            $this->session->set_flashdata('message', 'File berhasil diupload dan data dimasukkan ke database');
+            redirect('payroll/');
+        }
     }
-}
 
 
 
@@ -194,13 +238,13 @@ public function upload_excel() {
     {
         // Execute truncate query
         $yang_login = $this->session->userdata('login_session')['nama'];
-            $tgl = date('d M Y | H:i');
-            $data_log = [
-                'tanggal'       => $tgl,
-                'aksi'       => 'Menghapus semua data payroll',
-                'aktor'       => $yang_login
-            ];
-            $this->admin->insert('log_s', $data_log);
+        $tgl = date('d M Y | H:i');
+        $data_log = [
+            'tanggal'       => $tgl,
+            'aksi'       => 'Menghapus semua data payroll',
+            'aktor'       => $yang_login
+        ];
+        $this->admin->insert('log_s', $data_log);
         $this->db->truncate('payroll');
 
         // Set flashdata for success message
