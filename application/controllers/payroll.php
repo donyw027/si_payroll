@@ -73,7 +73,8 @@ class Payroll extends CI_Controller
 
     private function send_payroll_email_by1($payroll)
     {
-        // var_dump($payroll); die();
+        // var_dump($payroll);
+        // die();
         $bulann =  date('Y-m-d');
         $date1 = new DateTime($bulann);
         $date1->modify("-1 month");
